@@ -1,15 +1,15 @@
 from flask import Flask, request, redirect, url_for, session, render_template_string
 import math, datetime, os
-import psycopg2
+import psycopg  # Changed from psycopg2
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 # ---------------- Database Setup ---------------- #
-DB_URL = os.getenv("DATABASE_URL")  # Render injects this(Replace Render Externel Database link
+DB_URL = os.getenv("DATABASE_URL")  # Render injects this automatically
 
 def get_conn():
-    return psycopg2.connect(DB_URL, sslmode="require")
+    return psycopg.connect(DB_URL, sslmode="require")
 
 def init_db():
     conn = get_conn()
@@ -34,8 +34,10 @@ def log_activity(username, action, details):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("INSERT INTO logs (timestamp, username, action, details) VALUES (%s, %s, %s, %s)",
-                (timestamp, username, action, details))
+    cur.execute(
+        "INSERT INTO logs (timestamp, username, action, details) VALUES (%s, %s, %s, %s)",
+        (timestamp, username, action, details)
+    )
     conn.commit()
     cur.close()
     conn.close()
@@ -290,7 +292,7 @@ def admin_login():
     error = None
     if request.method == "POST":
         if request.form["password"] == ADMIN_PASSWORD:
-            logs_rows = get_all_logs()  # all logs from DB
+            logs_rows = get_all_logs()
             logs_rows.sort(key=lambda x: x[0])  # sort by timestamp
 
             sessions = []
