@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 # ---------------- Database Setup ---------------- #
-DB_URL = os.getenv("DATABASE_URL")  # Render injects this
+DB_URL = os.getenv("DATABASE_URL")  # Render injects this(Replace Render Externel Database link
 
 def get_conn():
     return psycopg2.connect(DB_URL, sslmode="require")
@@ -337,3 +337,4 @@ def admin_login():
 # ---------------- Main ---------------- #
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
+
